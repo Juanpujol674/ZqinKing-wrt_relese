@@ -44,10 +44,6 @@ reset_feeds_conf() {
     if [[ $COMMIT_HASH != "none" ]]; then
         git checkout $COMMIT_HASH
     fi
-    #if git status | grep -qE "$FEEDS_CONF$"; then
-    #    git reset HEAD $FEEDS_CONF
-    #    git checkout $FEEDS_CONF
-    #fi
 }
 
 update_feeds() {
@@ -64,14 +60,14 @@ remove_unwanted_packages() {
         "luci-app-passwall" "luci-app-smartdns" "luci-app-ddns-go" "luci-app-rclone"
         "luci-app-ssr-plus" "luci-app-vssr" "luci-theme-argon" "luci-app-daed" "luci-app-dae"
         "luci-app-alist" "luci-app-argon-config" "luci-app-homeproxy" "luci-app-haproxy-tcp"
-        "luci-app-openclash"
+        "luci-app-openclash" "luci-app-mihomo"
     )
     local packages_net=(
         "haproxy" "xray-core" "xray-plugin" "dns2tcp" "dns2socks" "alist" "hysteria"
         "smartdns" "mosdns" "adguardhome" "ddns-go" "naiveproxy" "shadowsocks-rust"
         "sing-box" "v2ray-core" "v2ray-geodata" "v2ray-plugin" "tuic-client"
         "chinadns-ng" "ipt2socks" "tcping" "trojan-plus" "simple-obfs"
-        "shadowsocksr-libev" "dae" "daed"
+        "shadowsocksr-libev" "dae" "daed" "mihomo"
     )
     local small8_packages=(
         "ppp" "firewall" "dae" "daed" "daed-next" "libnftnl" "nftables" "dnsmasq"
@@ -103,12 +99,14 @@ update_golang() {
 }
 
 install_small8() {
-    ./scripts/feeds install -p small8 -f xray-core xray-plugin dns2tcp dns2socks haproxy hysteria naiveproxy \
-        shadowsocks-rust sing-box v2ray-core v2ray-geodata v2ray-plugin tuic-client chinadns-ng ipt2socks tcping \
-        trojan-plus simple-obfs shadowsocksr-libev luci-app-passwall alist luci-app-alist smartdns luci-app-smartdns \
-        v2dat mosdns luci-app-mosdns adguardhome luci-app-adguardhome ddns-go luci-app-ddns-go taskd luci-lib-xterm \
-        luci-lib-taskd luci-app-store quickstart luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest \
-        luci-theme-argon netdata luci-app-netdata lucky luci-app-lucky luci-app-openclash
+    ./scripts/feeds install -p small8 -f xray-core xray-plugin dns2tcp dns2socks haproxy hysteria \
+        naiveproxy shadowsocks-rust sing-box v2ray-core v2ray-geodata v2ray-plugin tuic-client \
+        chinadns-ng ipt2socks tcping trojan-plus simple-obfs shadowsocksr-libev luci-app-passwall \
+        alist luci-app-alist smartdns luci-app-smartdns v2dat mosdns luci-app-mosdns adguardhome \
+        luci-app-adguardhome ddns-go luci-app-ddns-go taskd luci-lib-xterm luci-lib-taskd \
+        luci-app-store quickstart luci-app-quickstart luci-app-istorex luci-app-cloudflarespeedtest \
+        luci-theme-argon netdata luci-app-netdata lucky luci-app-lucky luci-app-openclash mihomo \
+        luci-app-mihomo luci-app-homeproxy
 }
 
 install_feeds() {
@@ -228,8 +226,8 @@ add_ax6600_led() {
     local initd_dir="$target_dir/etc/init.d"
     local sbin_dir="$target_dir/sbin"
 
-    if [ -f "$initd_dir/fix_ax6600_usb" ]; then
-        \cp -f "$BASE_PATH/patches/fix_ax6600_usb" "$initd_dir/fix_ax6600_usb"
+    if [ -d "$initd_dir" ]; then
+        \cp -f "$BASE_PATH/patches/start_screen" "$initd_dir/start_screen"
         mkdir -p "$sbin_dir"
         \cp -f "$BASE_PATH/patches/ax6600_led" "$sbin_dir"
     fi
